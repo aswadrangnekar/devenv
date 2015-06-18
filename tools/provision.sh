@@ -7,4 +7,20 @@ STACK=/opt/stack
 
 echo -e "**** Update os packages ***"
 apt-get update
+apt-get install -y git tig vim
+
+echo -e "**** Setup sn-Openstack + Rally ***"
+git clone https://git.openstack.org/openstack-dev/devstack
+git clone https://github.com/openstack/rally
+# Copy required files to devstack
+cp rally/contrib/devstack/lib/rally devstack/lib/
+cp rally/contrib/devstack/extras.d/70-rally.sh devstack/extras.d/
+# Set-up local.conf
+cd devstack
+cp samples/local.conf local.conf
+echo "enable_service rally" >> local.conf
+
+# stack
+./stack.sh
+
 echo "**** DONE ****"

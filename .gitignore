@@ -53,3 +53,8 @@ nohup.out
 
 # Vagrant
 .vagrant
+
+# Repos
+devstack
+rally
+stack
