@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+SHARED_DIR = "/home/vagrant/code"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "{{ box_type }}"
+    config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+    config.vm.provider "virtualbox" do |vm|
+       vm.memory = {{ mem }}
+       vm.cpus = {{ cpu }}
+    end
+
+    config.vm.define "devenv", primary: true do |devenv|
+        devenv.vm.synced_folder ".", SHARED_DIR, :create => true
+        # auto jump to shared dir on log in (uncomment if required)
+        devenv.vm.provision "shell", inline: "echo 'cd #{SHARED_DIR}' >> /home/vagrant/.bashrc"
+
+        # ip_address = "10.2.0.21"
+        # devenv.vm.network "private_network", ip: ip_address
+        # port-forward
+        {%- for port in port_forwarding %}
+        devenv.vm.network "forwarded_port", guest: {{ port }}, host_ip: "127.0.0.1", host: 1{{ port }}
+        {%- endfor %}
+
+        # provision
+        devenv.vm.provision "shell", path: "provision/{{ box_os }}/default.sh"
+        {%- for provision_script in provision_scripts %}
+        devenv.vm.provision "shell", path: "provision/{{ box_os }}/{{ provision_script }}.sh"
+        {%- endfor %}
+    end
+end

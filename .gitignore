@@ -58,3 +58,6 @@ nohup.out
 devstack
 rally
 stack
+
+Vagrantfile
+*.log
