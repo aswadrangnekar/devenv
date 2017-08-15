@@ -3,7 +3,7 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-SHARED_DIR = "/home/vagrant/code"
+SHARED_DIR = "/home/ubuntu/code"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "{{ box_type }}"
@@ -17,7 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define "devenv", primary: true do |devenv|
         devenv.vm.synced_folder ".", SHARED_DIR, :create => true
         # auto jump to shared dir on log in (uncomment if required)
-        devenv.vm.provision "shell", inline: "echo 'cd #{SHARED_DIR}' >> /home/vagrant/.bashrc"
+        devenv.vm.provision "shell", inline: "echo 'cd #{SHARED_DIR}' >> /home/ubuntu/.bashrc"
 
         # ip_address = "10.2.0.21"
         # devenv.vm.network "private_network", ip: ip_address
